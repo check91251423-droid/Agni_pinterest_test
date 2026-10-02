@@ -1,0 +1,38 @@
+{
+  "manifestVersion": 5,
+  "id": "com.agni.claude.photoshop.bridge",
+  "name": "Claude Photoshop Bridge",
+  "version": "0.0.1",
+  "main": "index.html",
+  "host": [
+    {
+      "app": "PS",
+      "minVersion": "24.0.0"
+    }
+  ],
+  "entrypoints": [
+    {
+      "type": "panel",
+      "id": "claudeBridgePanel",
+      "label": {
+        "default": "Claude Photoshop Bridge"
+      },
+      "minimumSize": {
+        "width": 260,
+        "height": 200
+      },
+      "maximumSize": {
+        "width": 2000,
+        "height": 2000
+      },
+      "preferredDockedSize": {
+        "width": 320,
+        "height": 420
+      },
+      "preferredFloatingSize": {
+        "width": 380,
+        "height": 520
+      }
+    }
+  ]
+}

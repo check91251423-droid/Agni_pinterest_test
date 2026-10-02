@@ -1,0 +1,71 @@
+/*
+ * Panel entry point.
+ * UI only — all Photoshop work goes through executeCommand().
+ */
+
+const logger = require("./src/utils/logger");
+const { executeCommand, listActions } = require("./src/bridge/executeCommand");
+const { getActiveDocument } = require("./src/photoshop/host");
+
+const logEl = document.getElementById("log");
+const statusEl = document.getElementById("status");
+
+function appendLog(level, text) {
+  if (!logEl) return;
+  const line = document.createElement("div");
+  line.className = `log-line ${level}`;
+  line.textContent = text;
+  logEl.appendChild(line);
+  logEl.scrollTop = logEl.scrollHeight;
+}
+
+function setStatus(text, isError = false) {
+  if (!statusEl) return;
+  statusEl.textContent = text;
+  statusEl.className = isError ? "status error" : "status";
+}
+
+logger.onMessage(appendLog);
+
+function reportDocument() {
+  const doc = getActiveDocument();
+  if (!doc) {
+    logger.warn("Active document: none");
+    setStatus("沒有開啟文件 — 請先在 Photoshop 開啟 PSD", true);
+    return null;
+  }
+  logger.info(`Active document: ${doc.title} (${doc.width}x${doc.height})`);
+  setStatus(`文件：${doc.title}`);
+  return doc;
+}
+
+async function run(command, busyLabel) {
+  setStatus(busyLabel);
+  const response = await executeCommand(command);
+  if (response.ok) {
+    setStatus(`完成：${response.action}`);
+  } else {
+    setStatus(`失敗：${response.error.message}`, true);
+  }
+  return response;
+}
+
+document.getElementById("btn-create-test-layer").addEventListener("click", () => {
+  run({ action: "createTestLayer", params: { name: "CLAUDE TEST" } }, "建立測試圖層…");
+});
+
+document.getElementById("btn-doc-info").addEventListener("click", () => {
+  reportDocument();
+});
+
+document.getElementById("btn-clear-log").addEventListener("click", () => {
+  if (logEl) logEl.innerHTML = "";
+});
+
+logger.info("Plugin loaded");
+logger.info(`Registered actions: ${listActions().join(", ")}`);
+reportDocument();
+
+// Exposed so a future transport (or the DevTools console) can drive the bridge:
+//   await window.PhotoshopBridge.executeCommand({ action: "createTestLayer" })
+window.PhotoshopBridge = { executeCommand, listActions };
