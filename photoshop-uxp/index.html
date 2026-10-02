@@ -14,7 +14,16 @@
       <div class="actions">
         <sp-button id="btn-create-test-layer" variant="cta">建立測試圖層</sp-button>
         <sp-button id="btn-doc-info" variant="secondary" quiet>檢查目前文件</sp-button>
+        <sp-button id="btn-inspect" variant="secondary">輸出圖層結構</sp-button>
+        <sp-button id="btn-find-fonts" variant="secondary">搜尋 Sansation 字型</sp-button>
       </div>
+
+      <section class="runner">
+        <label for="command-input">貼上 command JSON</label>
+        <textarea id="command-input" rows="5" spellcheck="false"
+          placeholder='{ "action": "inspectDocument" }'></textarea>
+        <sp-button id="btn-run" variant="cta" quiet>執行 command</sp-button>
+      </section>
 
       <section class="log-section">
         <div class="log-header">

@@ -78,3 +78,30 @@ h1 {
 .log-line.error {
   color: #ff8a80;
 }
+
+.runner {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.runner label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  opacity: 0.6;
+}
+
+.runner textarea {
+  box-sizing: border-box;
+  width: 100%;
+  resize: vertical;
+  padding: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.25);
+  color: #e8e8e8;
+  font-family: monospace;
+  font-size: 10px;
+  line-height: 1.45;
+}

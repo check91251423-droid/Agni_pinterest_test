@@ -58,6 +58,37 @@ document.getElementById("btn-doc-info").addEventListener("click", () => {
   reportDocument();
 });
 
+document.getElementById("btn-inspect").addEventListener("click", () => {
+  run({ action: "inspectDocument" }, "讀取圖層結構…");
+});
+
+document.getElementById("btn-find-fonts").addEventListener("click", () => {
+  run({ action: "findFonts", params: { query: "Sansation" } }, "搜尋字型…");
+});
+
+document.getElementById("btn-run").addEventListener("click", async () => {
+  const input = document.getElementById("command-input");
+  const raw = (input.value || "").trim();
+  if (!raw) {
+    logger.warn("command 欄位是空的。");
+    return;
+  }
+  let command;
+  try {
+    command = JSON.parse(raw);
+  } catch (error) {
+    logger.error("command JSON 解析失敗:", error);
+    setStatus("JSON 格式錯誤", true);
+    return;
+  }
+  // An array runs as a sequence, stopping at the first failure.
+  const list = Array.isArray(command) ? command : [command];
+  for (const item of list) {
+    const response = await run(item, `執行 ${item && item.action}…`);
+    if (!response.ok) break;
+  }
+});
+
 document.getElementById("btn-clear-log").addEventListener("click", () => {
   if (logEl) logEl.innerHTML = "";
 });

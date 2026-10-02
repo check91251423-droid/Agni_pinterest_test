@@ -12,15 +12,25 @@
  */
 
 const { createTestLayer } = require("./createTestLayer");
+const { inspectDocument } = require("./inspectDocument");
+const { findFonts } = require("./findFonts");
+const { setTextStyle } = require("./setTextStyle");
+const { moveLayer } = require("./moveLayer");
 
 const commands = {
   createTestLayer,
+  // read-only inspection
+  inspectDocument,
+  findFonts,
+  // non-destructive edits
+  setTextStyle,
+  moveLayer,
 };
 
 const PLANNED = [
   // document / layer basics
-  "getDocument", "getLayers", "findLayer", "createLayer", "deleteLayer",
-  "duplicateLayer", "renameLayer", "setLayerVisibility", "moveLayer", "groupLayers",
+  "getLayers", "findLayer", "createLayer", "deleteLayer",
+  "duplicateLayer", "renameLayer", "setLayerVisibility", "groupLayers",
   // smart objects (PRODUCT artwork must stay a smart object)
   "createSmartObject", "replaceSmartObjectContents", "placeEmbedded",
   // transforms (uniform scale by default — never distort PRODUCT)
