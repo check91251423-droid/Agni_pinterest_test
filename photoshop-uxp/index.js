@@ -6,6 +6,7 @@
 const logger = require("./src/utils/logger");
 const { executeCommand, listActions } = require("./src/bridge/executeCommand");
 const { getActiveDocument } = require("./src/photoshop/host");
+const fileBridge = require("./src/bridge/fileBridge");
 
 const logEl = document.getElementById("log");
 const statusEl = document.getElementById("status");
@@ -66,6 +67,39 @@ document.getElementById("btn-find-fonts").addEventListener("click", () => {
   run({ action: "findFonts", params: { query: "Sansation" } }, "搜尋字型…");
 });
 
+const bridgeStatusEl = document.getElementById("bridge-status");
+const bridgeToggleEl = document.getElementById("btn-bridge-toggle");
+
+function renderBridge(state) {
+  const watching = state && state.watching;
+  bridgeToggleEl.textContent = watching ? "停止 Claude 橋接" : "啟動 Claude 橋接";
+  bridgeStatusEl.className = watching ? "status live" : "status";
+  bridgeStatusEl.textContent = watching
+    ? `橋接中：${state.path}\\inbox`
+    : state && state.path
+    ? `橋接：已停止（${state.path}）`
+    : "橋接：未啟動";
+}
+
+bridgeToggleEl.addEventListener("click", async () => {
+  try {
+    const state = fileBridge.isWatching() ? fileBridge.stop() : await fileBridge.start();
+    renderBridge(state);
+  } catch (error) {
+    logger.error("橋接啟動失敗:", error);
+  }
+});
+
+document.getElementById("btn-bridge-folder").addEventListener("click", async () => {
+  try {
+    fileBridge.stop();
+    await fileBridge.chooseFolder();
+    renderBridge(await fileBridge.start());
+  } catch (error) {
+    logger.error("選擇資料夾失敗:", error);
+  }
+});
+
 document.getElementById("btn-run").addEventListener("click", async () => {
   const input = document.getElementById("command-input");
   const raw = (input.value || "").trim();
@@ -99,4 +133,9 @@ reportDocument();
 
 // Exposed so a future transport (or the DevTools console) can drive the bridge:
 //   await window.PhotoshopBridge.executeCommand({ action: "createTestLayer" })
-window.PhotoshopBridge = { executeCommand, listActions };
+window.PhotoshopBridge = { executeCommand, listActions, fileBridge };
+
+fileBridge
+  .restoreFolder()
+  .then((f) => renderBridge({ watching: false, path: f && f.nativePath }))
+  .catch((e) => logger.warn("restoreFolder:", e));

@@ -18,6 +18,14 @@
         <sp-button id="btn-find-fonts" variant="secondary">搜尋 Sansation 字型</sp-button>
       </div>
 
+      <section class="bridge">
+        <div class="bridge-row">
+          <sp-button id="btn-bridge-toggle" variant="cta">啟動 Claude 橋接</sp-button>
+          <sp-action-button id="btn-bridge-folder" quiet>選資料夾</sp-action-button>
+        </div>
+        <p id="bridge-status" class="status">橋接：未啟動</p>
+      </section>
+
       <section class="runner">
         <label for="command-input">貼上 command JSON</label>
         <textarea id="command-input" rows="5" spellcheck="false"
