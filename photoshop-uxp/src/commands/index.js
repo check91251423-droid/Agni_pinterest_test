@@ -16,6 +16,8 @@ const { inspectDocument } = require("./inspectDocument");
 const { findFonts } = require("./findFonts");
 const { setTextStyle } = require("./setTextStyle");
 const { moveLayer } = require("./moveLayer");
+const { createTextLayer } = require("./createTextLayer");
+const { setLayerVisibility } = require("./setLayerVisibility");
 
 const commands = {
   createTestLayer,
@@ -25,12 +27,14 @@ const commands = {
   // non-destructive edits
   setTextStyle,
   moveLayer,
+  createTextLayer,
+  setLayerVisibility,
 };
 
 const PLANNED = [
   // document / layer basics
   "getLayers", "findLayer", "createLayer", "deleteLayer",
-  "duplicateLayer", "renameLayer", "setLayerVisibility", "groupLayers",
+  "duplicateLayer", "renameLayer", "groupLayers",
   // smart objects (PRODUCT artwork must stay a smart object)
   "createSmartObject", "replaceSmartObjectContents", "placeEmbedded",
   // transforms (uniform scale by default — never distort PRODUCT)
